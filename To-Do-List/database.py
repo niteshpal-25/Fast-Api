@@ -1,16 +1,17 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime
-from sqlalchemy.sql import func
-from database import Base
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-class Note(Base):
-    __tablename__ = "notes"
+DATABASE_URL = "sqlite:///./todo.db"
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    content = Column(Text, nullable=False)
-    tag = Column(String, nullable=True)
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False}
+)
 
-    created_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now()
-    )
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+Base = declarative_base()
